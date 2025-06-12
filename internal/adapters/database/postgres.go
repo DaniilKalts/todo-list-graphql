@@ -1,15 +1,16 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 
 	"github.com/DaniilKalts/todo-list-graphql/internal/config"
+	"github.com/DaniilKalts/todo-list-graphql/internal/domain"
 )
 
-func InitDB(cfg *config.Config) (*sql.DB, error) {
+func InitDB(cfg *config.Config) (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		cfg.Database.Host,
@@ -20,13 +21,12 @@ func InitDB(cfg *config.Config) (*sql.DB, error) {
 		cfg.Database.SSLMode,
 	)
 
-	db, err := sql.Open("postgres", dsn)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to Postgres: %v", err)
 	}
-	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("unable to ping database: %v", err)
-	}
+
+	db.AutoMigrate(&domain.Category{}, &domain.Todo{}, &domain.Image{})
 
 	return db, nil
 }

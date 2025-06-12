@@ -1,6 +1,7 @@
 package http
 
 import (
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 
@@ -15,10 +16,13 @@ import (
 	"github.com/DaniilKalts/todo-list-graphql/internal/config"
 )
 
-const defaultPort = "8080"
-
-func StartServer(cfg *config.Config) error {
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+func StartServer(cfg *config.Config, db *gorm.DB) error {
+	srv := handler.New(
+		graph.NewExecutableSchema(
+			graph.
+				Config{Resolvers: &graph.Resolver{DB: db}},
+		),
+	)
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})

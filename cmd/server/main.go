@@ -19,9 +19,7 @@ func main() {
 		panic(err)
 	}
 
-	defer db.Close()
-
-	if err := http.StartServer(cfg); err != nil {
+	if err := http.StartServer(cfg, db); err != nil {
 		log.Fatal(err)
 	}
 }
