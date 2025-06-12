@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/DaniilKalts/todo-list-graphql/internal/adapters/database"
 	"github.com/DaniilKalts/todo-list-graphql/internal/config"
 )
 
@@ -10,5 +11,10 @@ func main() {
 		panic(err)
 	}
 
-	_ = cfg
+	db, err := database.InitDB(cfg)
+	if err != nil {
+		panic(err)
+	}
+
+	defer db.Close()
 }

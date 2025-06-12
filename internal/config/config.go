@@ -12,8 +12,18 @@ type ServerConfig struct {
 	Port string `mapstructure:"http_port"`
 }
 
+type DatabaseConfig struct {
+	Host     string `mapstructure:"db_host"`
+	Port     int    `mapstructure:"db_port"`
+	User     string `mapstructure:"db_user"`
+	Password string `mapstructure:"db_password"`
+	Name     string `mapstructure:"db_name"`
+	SSLMode  string `mapstructure:"db_sslmode"`
+}
+
 type Config struct {
-	Server ServerConfig `mapstructure:"server"`
+	Server   ServerConfig   `mapstructure:"server"`
+	Database DatabaseConfig `mapstructure:"database"`
 }
 
 var cfg Config
@@ -22,6 +32,13 @@ func LoadConfig() (*Config, error) {
 	v := viper.New()
 
 	v.SetDefault("server.http_port", ":8000")
+
+	v.SetDefault("db_host", "localhost")
+	v.SetDefault("db_port", 5432)
+	v.SetDefault("db_user", "postgres")
+	v.SetDefault("db_password", "1234")
+	v.SetDefault("db_name", "spichka")
+	v.SetDefault("db_sslmode", "disable")
 
 	v.SetConfigName("config.local")
 	v.SetConfigType("yaml")
