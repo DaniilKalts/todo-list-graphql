@@ -1,0 +1,6 @@
+# Hide IDE-specific configuration files
+.idea
+
+# Hide local and production configuration files
+config/config.local.yaml
+config/config.prod.yaml
