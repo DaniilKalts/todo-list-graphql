@@ -1,7 +1,10 @@
 package main
 
 import (
+	"log"
+
 	"github.com/DaniilKalts/todo-list-graphql/internal/adapters/database"
+	"github.com/DaniilKalts/todo-list-graphql/internal/adapters/http"
 	"github.com/DaniilKalts/todo-list-graphql/internal/config"
 )
 
@@ -17,4 +20,8 @@ func main() {
 	}
 
 	defer db.Close()
+
+	if err := http.StartServer(cfg); err != nil {
+		log.Fatal(err)
+	}
 }

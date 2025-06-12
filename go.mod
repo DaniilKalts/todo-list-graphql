@@ -3,16 +3,23 @@ module github.com/DaniilKalts/todo-list-graphql
 go 1.24.4
 
 require (
+	github.com/99designs/gqlgen v0.17.74
 	github.com/goforj/godump v1.1.0
+	github.com/lib/pq v1.10.9
 	github.com/spf13/viper v1.20.1
+	github.com/vektah/gqlparser/v2 v2.5.27
 )
 
 require (
+	github.com/agnivade/levenshtein v1.2.1 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
-	github.com/lib/pq v1.10.9 // indirect
+	github.com/google/uuid v1.6.0 // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/sagikazarmark/locafero v0.9.0 // indirect
+	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.14.0 // indirect
 	github.com/spf13/cast v1.9.2 // indirect
