@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: daniil14may
+      POSTGRES_DB: todo_list
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./config:/config:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      CONFIG_PATH: /app/config/config.local.yaml
+
+volumes:
+  db-data:
