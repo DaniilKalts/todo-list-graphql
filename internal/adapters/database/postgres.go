@@ -26,7 +26,7 @@ func InitDB(cfg *config.Config) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to connect to Postgres: %v", err)
 	}
 
-	db.AutoMigrate(&domain.Category{}, &domain.Todo{}, &domain.Image{})
+	db.AutoMigrate(&domain.Category{}, &domain.Todo{})
 
 	return db, nil
 }

@@ -16,14 +16,6 @@ type Category struct {
 	DeletedAt   *time.Time `json:"deletedAt,omitempty"`
 }
 
-type Image struct {
-	ID        string     `json:"id"`
-	URL       string     `json:"url"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt,omitempty"`
-}
-
 type Mutation struct {
 }
 
@@ -36,7 +28,6 @@ type Todo struct {
 	Description string     `json:"description"`
 	Done        bool       `json:"done"`
 	Category    *Category  `json:"category"`
-	Images      []*Image   `json:"images"`
 	CreatedAt   time.Time  `json:"createdAt"`
 	UpdatedAt   time.Time  `json:"updatedAt"`
 	DeletedAt   *time.Time `json:"deletedAt,omitempty"`

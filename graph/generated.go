@@ -58,16 +58,7 @@ type ComplexityRoot struct {
 		UpdatedAt   func(childComplexity int) int
 	}
 
-	Image struct {
-		CreatedAt func(childComplexity int) int
-		DeletedAt func(childComplexity int) int
-		ID        func(childComplexity int) int
-		URL       func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
-	}
-
 	Mutation struct {
-		AddImage       func(childComplexity int, todoID string, url string) int
 		CreateCategory func(childComplexity int, name string, description string) int
 		CreateTodo     func(childComplexity int, name string, description string, categoryID string) int
 		DeleteTodo     func(childComplexity int, id string) int
@@ -88,7 +79,6 @@ type ComplexityRoot struct {
 		Description func(childComplexity int) int
 		Done        func(childComplexity int) int
 		ID          func(childComplexity int) int
-		Images      func(childComplexity int) int
 		Name        func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 	}
@@ -97,7 +87,6 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CreateCategory(ctx context.Context, name string, description string) (*model.Category, error)
 	CreateTodo(ctx context.Context, name string, description string, categoryID string) (*model.Todo, error)
-	AddImage(ctx context.Context, todoID string, url string) (*model.Image, error)
 	ToggleTodoDone(ctx context.Context, id string) (*model.Todo, error)
 	DeleteTodo(ctx context.Context, id string) (bool, error)
 }
@@ -175,53 +164,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Category.UpdatedAt(childComplexity), true
-
-	case "Image.createdAt":
-		if e.complexity.Image.CreatedAt == nil {
-			break
-		}
-
-		return e.complexity.Image.CreatedAt(childComplexity), true
-
-	case "Image.deletedAt":
-		if e.complexity.Image.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.Image.DeletedAt(childComplexity), true
-
-	case "Image.id":
-		if e.complexity.Image.ID == nil {
-			break
-		}
-
-		return e.complexity.Image.ID(childComplexity), true
-
-	case "Image.url":
-		if e.complexity.Image.URL == nil {
-			break
-		}
-
-		return e.complexity.Image.URL(childComplexity), true
-
-	case "Image.updatedAt":
-		if e.complexity.Image.UpdatedAt == nil {
-			break
-		}
-
-		return e.complexity.Image.UpdatedAt(childComplexity), true
-
-	case "Mutation.addImage":
-		if e.complexity.Mutation.AddImage == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_addImage_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.AddImage(childComplexity, args["todoID"].(string), args["url"].(string)), true
 
 	case "Mutation.createCategory":
 		if e.complexity.Mutation.CreateCategory == nil {
@@ -350,13 +292,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Todo.ID(childComplexity), true
-
-	case "Todo.images":
-		if e.complexity.Todo.Images == nil {
-			break
-		}
-
-		return e.complexity.Todo.Images(childComplexity), true
 
 	case "Todo.name":
 		if e.complexity.Todo.Name == nil {
@@ -494,47 +429,6 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
-
-func (ec *executionContext) field_Mutation_addImage_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := ec.field_Mutation_addImage_argsTodoID(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["todoID"] = arg0
-	arg1, err := ec.field_Mutation_addImage_argsURL(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["url"] = arg1
-	return args, nil
-}
-func (ec *executionContext) field_Mutation_addImage_argsTodoID(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("todoID"))
-	if tmp, ok := rawArgs["todoID"]; ok {
-		return ec.unmarshalNID2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_addImage_argsURL(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (string, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
-	if tmp, ok := rawArgs["url"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_Mutation_createCategory_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
@@ -1032,8 +926,6 @@ func (ec *executionContext) fieldContext_Category_todos(_ context.Context, field
 				return ec.fieldContext_Todo_done(ctx, field)
 			case "category":
 				return ec.fieldContext_Todo_category(ctx, field)
-			case "images":
-				return ec.fieldContext_Todo_images(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Todo_createdAt(ctx, field)
 			case "updatedAt":
@@ -1176,223 +1068,6 @@ func (ec *executionContext) fieldContext_Category_deletedAt(_ context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _Image_id(ctx context.Context, field graphql.CollectedField, obj *model.Image) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Image_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Image_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Image",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Image_url(ctx context.Context, field graphql.CollectedField, obj *model.Image) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Image_url(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.URL, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Image_url(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Image",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Image_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Image) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Image_createdAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CreatedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Image_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Image",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Image_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Image) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Image_updatedAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UpdatedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Image_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Image",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Image_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.Image) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Image_deletedAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	fc.Result = res
-	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Image_deletedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Image",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_createCategory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createCategory(ctx, field)
 	if err != nil {
@@ -1513,8 +1188,6 @@ func (ec *executionContext) fieldContext_Mutation_createTodo(ctx context.Context
 				return ec.fieldContext_Todo_done(ctx, field)
 			case "category":
 				return ec.fieldContext_Todo_category(ctx, field)
-			case "images":
-				return ec.fieldContext_Todo_images(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Todo_createdAt(ctx, field)
 			case "updatedAt":
@@ -1533,73 +1206,6 @@ func (ec *executionContext) fieldContext_Mutation_createTodo(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createTodo_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_addImage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_addImage(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddImage(rctx, fc.Args["todoID"].(string), fc.Args["url"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.Image)
-	fc.Result = res
-	return ec.marshalNImage2ᚖgithubᚗcomᚋDaniilKaltsᚋtodoᚑlistᚑgraphqlᚋgraphᚋmodelᚐImage(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_addImage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Image_id(ctx, field)
-			case "url":
-				return ec.fieldContext_Image_url(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Image_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Image_updatedAt(ctx, field)
-			case "deletedAt":
-				return ec.fieldContext_Image_deletedAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Image", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_addImage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1655,8 +1261,6 @@ func (ec *executionContext) fieldContext_Mutation_toggleTodoDone(ctx context.Con
 				return ec.fieldContext_Todo_done(ctx, field)
 			case "category":
 				return ec.fieldContext_Todo_category(ctx, field)
-			case "images":
-				return ec.fieldContext_Todo_images(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Todo_createdAt(ctx, field)
 			case "updatedAt":
@@ -1785,8 +1389,6 @@ func (ec *executionContext) fieldContext_Query_todos(_ context.Context, field gr
 				return ec.fieldContext_Todo_done(ctx, field)
 			case "category":
 				return ec.fieldContext_Todo_category(ctx, field)
-			case "images":
-				return ec.fieldContext_Todo_images(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Todo_createdAt(ctx, field)
 			case "updatedAt":
@@ -1846,8 +1448,6 @@ func (ec *executionContext) fieldContext_Query_todo(ctx context.Context, field g
 				return ec.fieldContext_Todo_done(ctx, field)
 			case "category":
 				return ec.fieldContext_Todo_category(ctx, field)
-			case "images":
-				return ec.fieldContext_Todo_images(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Todo_createdAt(ctx, field)
 			case "updatedAt":
@@ -2362,62 +1962,6 @@ func (ec *executionContext) fieldContext_Todo_category(_ context.Context, field 
 				return ec.fieldContext_Category_deletedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Category", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Todo_images(ctx context.Context, field graphql.CollectedField, obj *model.Todo) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Todo_images(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Images, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*model.Image)
-	fc.Result = res
-	return ec.marshalNImage2ᚕᚖgithubᚗcomᚋDaniilKaltsᚋtodoᚑlistᚑgraphqlᚋgraphᚋmodelᚐImageᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Todo_images(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Todo",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Image_id(ctx, field)
-			case "url":
-				return ec.fieldContext_Image_url(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Image_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Image_updatedAt(ctx, field)
-			case "deletedAt":
-				return ec.fieldContext_Image_deletedAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Image", field.Name)
 		},
 	}
 	return fc, nil
@@ -4577,62 +4121,6 @@ func (ec *executionContext) _Category(ctx context.Context, sel ast.SelectionSet,
 	return out
 }
 
-var imageImplementors = []string{"Image"}
-
-func (ec *executionContext) _Image(ctx context.Context, sel ast.SelectionSet, obj *model.Image) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, imageImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Image")
-		case "id":
-			out.Values[i] = ec._Image_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "url":
-			out.Values[i] = ec._Image_url(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "createdAt":
-			out.Values[i] = ec._Image_createdAt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "updatedAt":
-			out.Values[i] = ec._Image_updatedAt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "deletedAt":
-			out.Values[i] = ec._Image_deletedAt(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -4662,13 +4150,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "createTodo":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createTodo(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "addImage":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_addImage(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -4875,11 +4356,6 @@ func (ec *executionContext) _Todo(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "category":
 			out.Values[i] = ec._Todo_category(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "images":
-			out.Values[i] = ec._Todo_images(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -5341,64 +4817,6 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) marshalNImage2githubᚗcomᚋDaniilKaltsᚋtodoᚑlistᚑgraphqlᚋgraphᚋmodelᚐImage(ctx context.Context, sel ast.SelectionSet, v model.Image) graphql.Marshaler {
-	return ec._Image(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNImage2ᚕᚖgithubᚗcomᚋDaniilKaltsᚋtodoᚑlistᚑgraphqlᚋgraphᚋmodelᚐImageᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Image) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNImage2ᚖgithubᚗcomᚋDaniilKaltsᚋtodoᚑlistᚑgraphqlᚋgraphᚋmodelᚐImage(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalNImage2ᚖgithubᚗcomᚋDaniilKaltsᚋtodoᚑlistᚑgraphqlᚋgraphᚋmodelᚐImage(ctx context.Context, sel ast.SelectionSet, v *model.Image) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._Image(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v any) (string, error) {

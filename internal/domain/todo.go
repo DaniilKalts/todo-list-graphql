@@ -11,8 +11,6 @@ type Todo struct {
 	CategoryID uint     `gorm:"not null;index"`
 	Category   Category `gorm:"constraint:OnUpdate:CASCADE,OnDelete:RESTRICT;"`
 
-	Images []Image `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 	DeletedAt time.Time

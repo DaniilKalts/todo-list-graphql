@@ -6,7 +6,6 @@ type Todo {
   description: String!
   done: Boolean!
   category: Category!
-  images: [Image!]!
   createdAt: Time!
   updatedAt: Time!
   deletedAt: Time
@@ -17,14 +16,6 @@ type Category {
   name: String!
   description: String!
   todos: [Todo!]!
-  createdAt: Time!
-  updatedAt: Time!
-  deletedAt: Time
-}
-
-type Image {
-  id: ID!
-  url: String!
   createdAt: Time!
   updatedAt: Time!
   deletedAt: Time
@@ -44,7 +35,6 @@ type Mutation {
     description: String!
     categoryID: ID!
   ): Todo!
-  addImage(todoID: ID!, url: String!): Image!
   toggleTodoDone(id: ID!): Todo!
   deleteTodo(id: ID!): Boolean!
 }
